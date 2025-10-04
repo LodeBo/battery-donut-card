@@ -2,7 +2,7 @@
 
 A minimalist Home Assistant custom card that renders a smooth, multi-stop **battery SoC donut** — with auto-scaling text and a configurable top label.  
 
-![screenshot](https://github.com/LodeBo/battery-donut-card/blob/main/screenshot.png?raw=true)
+![screenshot](https://github.com/LodeBo/battery-donut-card/blob/main/donut.png?raw=true)
 
 ---
 
@@ -53,6 +53,7 @@ type: module
 | `padding`          | string   | `0px`        | Inner padding of the card. |
 | `border`           | string   | `none`       | Border of the card. |
 | `aspect_ratio`     | string   | `1/1`        | Aspect ratio of the card. |
+
 
 
 
