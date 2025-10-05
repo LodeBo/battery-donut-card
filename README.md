@@ -40,24 +40,63 @@ layout_options:
   grid_columns: 1
   grid_rows: 2
 ```
-| Option            | Type    | Default                  | Description                              |
-| ----------------- | ------- | ------------------------ | ---------------------------------------- |
-| `entity`          | string  | **required**             | Battery SoC sensor (0–100 %)             |
-| `cap_kwh`         | number  | 5.12                     | Total battery capacity in kWh            |
-| `ring_radius`     | number  | 80                       | Ring radius (size)                       |
-| `ring_width`      | number  | 8                        | Ring thickness                           |
-| `track_color`     | string  | `#000000`                | Color of the background track            |
-| `segments`        | number  | 140                      | Number of small arcs for smoothness      |
-| `label_text`      | string  | `"Battery"`              | Text displayed above the ring            |
-| `label_gap`       | number  | 20                       | Vertical distance between label and ring |
-| `text_scale`      | number  | 1.0                      | Scales all text sizes together           |
-| `glow_enabled`    | boolean | true                     | Enables soft ring glow                   |
-| `glow_blur`       | number  | 3.5                      | Blur strength of glow                    |
-| `glow_opacity`    | number  | 0.35                     | Glow transparency                        |
-| `glow_scale`      | number  | 1.6                      | Glow size multiplier                     |
-| `outline_enabled` | boolean | true                     | Draws faint outline circle               |
-| `outline_color`   | string  | `rgba(255,255,255,0.06)` | Outline color                            |
-| `outline_width`   | number  | 1                        | Outline thickness                        |
+## ⚙️ Options
+
+| Option | Type | Default | Description |
+|--------|------|----------|-------------|
+| `entity` | string | **required** | Battery SoC sensor (0–100 %) |
+| `cap_kwh` | number | 5.12 | Total battery capacity (kWh) — used to calculate displayed kWh |
+| `segments` | number | 140 | Number of small arcs; higher = smoother gradient |
+| `track_color` | string | `#000000` | Color of the inactive track (background ring) |
+
+### 🎨 Colors
+| Option | Type | Default | Description |
+|--------|------|----------|-------------|
+| `color_red` | string | `#ff0000` | Gradient start color (0 %) |
+| `color_orange` | string | `#fb923c` | Red → yellow transition |
+| `color_yellow` | string | `#facc15` | Midpoint color |
+| `color_green` | string | `#34d399` | Yellow → cyan transition |
+| `color_cyan` | string | `#00bcd4` | Gradient end color (100 %) |
+| `text_color_inside` | string | `#ffffff` | Text color inside the donut |
+
+### 🌈 Gradient Stops
+| Option | Type | Default | Description |
+|--------|------|----------|-------------|
+| `stop_red_hold` | number | 0.11 | Portion (0–1) to keep pure red before orange starts |
+| `stop_orange` | number | 0.25 | Position where orange segment ends |
+| `stop_yellow` | number | 0.45 | Position where yellow segment ends |
+| `stop_green` | number | 0.70 | Position where green segment ends and cyan begins |
+
+### 🧭 Layout & Position
+| Option | Type | Default | Description |
+|--------|------|----------|-------------|
+| `ring_radius` | number | 80 | Radius (size) of the donut |
+| `ring_width` | number | 8 | Thickness of the donut ring |
+| `ring_offset_y` | number | 10 | Moves the whole ring up/down |
+| `label_ring_gap` | number | 20 | Vertical distance between label and ring (only used when label is visible) |
+
+### 🏷️ Top Label
+| Option | Type | Default | Description |
+|--------|------|----------|-------------|
+| `top_label_text` | string | `"Battery"` | Text above the ring — leave empty (`''`) to hide it and auto-center the ring |
+| `top_label_weight` | number | 300 | Font weight of the label |
+| `top_label_color` | string | `#ffffff` | Label text color |
+
+### 🔢 Inner Text
+| Option | Type | Default | Description |
+|--------|------|----------|-------------|
+| `soc_decimals` | number | 0 | Number of decimals for % display |
+| `font_scale_kwh` | number | 0.30 | Font size of kWh text (relative to ring radius) |
+| `font_scale_soc` | number | 0.38 | Font size of % text (relative to ring radius) |
+
+### 🧱 Card Style
+| Option | Type | Default | Description |
+|--------|------|----------|-------------|
+| `background` | string | `'transparent'` | Card background color |
+| `border_radius` | string | `'0px'` | Corner radius of the card |
+| `box_shadow` | string | `'none'` | Box-shadow styling |
+| `border` | string | `'none'` | Border styling |
+| `padding` | string | `'0px'` | Inner padding of the card |
 
 💡 Tip
 
@@ -65,3 +104,4 @@ If you’re using the new Sections Dashboard layout in Home Assistant,
 you can make the donut perfectly centered by tweaking the layout_options
 and ring_radius values to fit your section size.
 This gives a clean, balanced look in both desktop and mobile views.
+
