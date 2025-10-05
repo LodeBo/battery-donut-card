@@ -1,59 +1,73 @@
-# Battery Donut Card
+# 🌀 Battery Donut Card
 
-A minimalist Home Assistant custom card that renders a smooth, multi-stop **battery SoC donut** — with auto-scaling text and a configurable top label.  
-
-![screenshot](https://github.com/LodeBo/battery-donut-card/blob/main/donut.png?raw=true)
+A minimalist Home Assistant custom card that renders a smooth, multi-color donut ring showing battery SoC and kWh.  
+Fully SVG-based, scales perfectly with any layout, and supports dynamic color gradients (red → orange → yellow → green → cyan).
 
 ---
 
-## Installation
+## ✨ Features
 
-### HACS (recommended)
-1. Go to **HACS → Frontend → ⋮ → Custom repositories**.  
-2. Add your repository URL, category: **Lovelace**.  
-3. Install **Battery Donut Card** and click **Reload resources**.  
+- Smooth gradient from red → cyan with natural transitions  
+- Adjustable ring radius and thickness  
+- Optional glowing effect  
+- Optional top label with adjustable gap  
+- Auto-scaling text inside the ring  
+- Compact design, fully responsive
+- By adjusting the layoutoptions and the ring radius you can make it fit perfect in the
 
-### Manual
-Copy `battery-donut-card.js` into `/config/www/` and add this resource in **Settings → Dashboards → Resources**:
+## 💡 **Tip:**  
+If you’re using the new *Sections Dashboard* layout in Home Assistant,  
+you can make the donut perfectly centered by tweaking the `layout_options`  
+and `ring_radius` values to fit your section size.  
+This gives a clean, balanced look in both desktop and mobile views.
+
+---
+
+## 🔧 Installation
+
+**Manual**
+1. Download the latest `battery-donut-card.js` from  
+   [👉 GitHub Releases](https://github.com/lodebo/battery-donut-card/releases/latest)  
+2. Copy it to your Home Assistant `www` folder.  
+3. Add this to your Dashboard resources:  
+4. Restart your dashboard.
+
+**HACS (custom repo)**
+1. In HACS → Integrations → Custom Repositories  
+Add: `https://github.com/lodebo/battery-donut-card`  
+Type: **Lovelace**  
+2. Search for “Battery Donut Card” and install.
+
+---
+
+## 🧩 Example configuration
 
 ```yaml
-url: /local/battery-donut-card.js
-type: module
+type: custom:battery-donut-card
+entity: sensor.battery_soc
+cap_kwh: 10.24
+ring_radius: 80
+ring_width: 8
+track_color: '#000000'
+top_label_text: 'Batterij 1'
+top_label_gap: 12
+layout_options:
+  grid_columns: 1
+  grid_rows: 2
 ```
-## Options
 
-| Option             | Type     | Default      | Description |
-|--------------------|----------|--------------|-------------|
-| `entity`           | string   | **required** | Sensor providing 0–100 % SoC. |
-| `cap_kwh`          | number   | `5.12`       | Total battery capacity (kWh), used to calculate displayed kWh. |
-| `ring_radius`      | number   | `80`         | Radius of the ring. Larger = bigger donut. |
-| `ring_width`       | number   | `8`          | Thickness of the ring. |
-| `track_color`      | string   | `#000000`    | Color of the background track. |
-| `rotate_deg`       | number   | `-90`        | Rotation in degrees (where 0% starts). |
-| `segments`         | number   | `140`        | Number of arc segments (higher = smoother gradient). |
-| `color_red`        | string   | `#ff0000`    | Start color (0%). |
-| `color_orange`     | string   | `#fb923c`    | Transition color. |
-| `color_yellow`     | string   | `#facc15`    | Transition color. |
-| `color_green`      | string   | `#34d399`    | Transition color. |
-| `color_cyan`       | string   | `#00bcd4`    | End color (100%). |
-| `glow_enabled`     | bool     | `true`       | Enable/disable glow effect. |
-| `glow_blur`        | number   | `3.5`        | Blur radius for glow. |
-| `glow_opacity`     | number   | `0.35`       | Opacity of glow. |
-| `glow_scale`       | number   | `1.6`        | Thickness of glow relative to ring. |
-| `outline_enabled`  | bool     | `false`      | Enable outline inside the donut. |
-| `top_label_text`   | string   | `'Battery'`  | Text above the ring. |
-| `top_label_weight` | number   | `300`        | Font weight of the top label. |
-| `top_label_color`  | string   | `var(--primary-text-color)` | Color of the top label. |
-| `ring_offset_y`    | number   | `10`         | Shift the ring up or down (positive = lower). |
-| `font_scale_kwh`   | number   | `0.30`       | Scale factor for the kWh text size (auto-scales with `ring_radius`). |
-| `font_scale_soc`   | number   | `0.38`       | Scale factor for the % text size (auto-scales with `ring_radius`). |
-| `background`       | string   | `transparent`| Background of the card. |
-| `border_radius`    | string   | `0px`        | Border radius of the card. |
-| `box_shadow`       | string   | `none`       | Shadow of the card. |
-| `padding`          | string   | `0px`        | Inner padding of the card. |
-| `border`           | string   | `none`       | Border of the card. |
-| `aspect_ratio`     | string   | `1/1`        | Aspect ratio of the card. |
-
-
-
-
+| Option            | Type    | Default      | Description                              |
+| ----------------- | ------- | ------------ | ---------------------------------------- |
+| `entity`          | string  | **required** | Sensor providing 0–100 % SoC             |
+| `cap_kwh`         | number  | `5.12`       | Total battery capacity (kWh)             |
+| `ring_radius`     | number  | `80`         | Radius of the ring                       |
+| `ring_width`      | number  | `8`          | Thickness of the ring                    |
+| `track_color`     | string  | `#000000`    | Color of the track background            |
+| `segments`        | number  | `140`        | Number of gradient segments              |
+| `top_label_text`  | string  | `Battery`    | Label above the ring (set empty to hide) |
+| `top_label_gap`   | number  | `10`         | Distance between label and ring          |
+| `glow_enabled`    | boolean | `true`       | Enables ring glow                        |
+| `glow_blur`       | number  | `3.5`        | Blur intensity for glow                  |
+| `glow_opacity`    | number  | `0.35`       | Glow opacity                             |
+| `glow_scale`      | number  | `1.6`        | Glow width multiplier                    |
+| `outline_enabled` | boolean | `true`       | Adds faint outline around donut          |
