@@ -6,7 +6,7 @@
  */
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "1.0.1";
+  const VERSION = "1.0.3";
 
   // --------- Metadata voor HA kaartkiezer / HACS ----------
   window.customCards = window.customCards || [];
