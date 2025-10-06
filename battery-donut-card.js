@@ -370,7 +370,18 @@
     }
   }
 
-  if (!customElements.get(TAG)) {
-    customElements.define(TAG, BatteryDonutCard);
-  }
-})();
+// -- Register with the Lovelace card picker
+window.customCards = window.customCards || [];
+window.customCards = window.customCards.filter(c => c.type !== "battery-donut-card");
+window.customCards.push({
+  type: "battery-donut-card",
+  name: "Battery Donut Card",
+  description: "Smooth multi-stop battery donut (SoC + kWh) with auto-scaling text and optional top label.",
+  preview: true,
+  documentationURL: "https://github.com/LodeBo/battery-donut-card#readme",
+  version: "1.0.3"
+});
+
+if (!customElements.get("battery-donut-card")) {
+  customElements.define("battery-donut-card", BatteryDonutCard);
+}
