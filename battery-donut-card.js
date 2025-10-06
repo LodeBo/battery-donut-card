@@ -1,12 +1,12 @@
 /*!
- * Battery Donut Card — v1.0.1
+ * Battery Donut Card — v1.0.4
  * YAML-only custom card for Home Assistant
  * – Smooth multi-stop gradient, auto-scaling text, optional top label with smart centering
  * MIT License
  */
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "1.0.1";
+  const VERSION = "1.0.4";
 
   // --------- Metadata voor HA kaartkiezer / HACS ----------
   window.customCards = window.customCards || [];
