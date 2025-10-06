@@ -1,12 +1,12 @@
 /*!
- * Battery Donut Card — v1.0.3
+ * Battery Donut Card — v1.0.1
  * YAML-only custom card for Home Assistant
  * – Smooth multi-stop gradient, auto-scaling text, optional top label with smart centering
  * MIT License
  */
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "1.0.3";
+  const VERSION = "1.0.1";
 
   // --------- Metadata voor HA kaartkiezer / HACS ----------
   window.customCards = window.customCards || [];
@@ -370,18 +370,7 @@
     }
   }
 
-// -- Register with the Lovelace card picker
-window.customCards = window.customCards || [];
-window.customCards = window.customCards.filter(c => c.type !== "battery-donut-card");
-window.customCards.push({
-  type: "battery-donut-card",
-  name: "Battery Donut Card",
-  description: "Smooth multi-stop battery donut (SoC + kWh) with auto-scaling text and optional top label.",
-  preview: true,
-  documentationURL: "https://github.com/LodeBo/battery-donut-card#readme",
-  version: "1.0.3"
-});
-
-if (!customElements.get("battery-donut-card")) {
-  customElements.define("battery-donut-card", BatteryDonutCard);
-}
+  if (!customElements.get(TAG)) {
+    customElements.define(TAG, BatteryDonutCard);
+  }
+})();
