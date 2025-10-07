@@ -1,3 +1,10 @@
+## 📸 Preview
+
+![Battery Donut Card](https://raw.githubusercontent.com/lodebo/donut/main/battery_donut_card.png)
+
+> *Example: dual-tone gradient ring from red → orange → yellow → green → cyan with auto-scaling text.*
+
+
 ## 🛠️ Installation
 
 ### Manual
@@ -97,6 +104,7 @@ layout_options:
 | `box_shadow` | string | `'none'` | Box-shadow styling |
 | `border` | string | `'none'` | Border styling |
 | `padding` | string | `'0px'` | Inner padding of the card |
+
 
 
 
