@@ -1,12 +1,12 @@
 /*!
- * Battery Donut Card — v1.0.5
+ * Battery Donut Card — v1.0.6
  * Smooth multi-stop gradient (red→orange→yellow→green→cyan)
  * Auto-scaling text, optional top label, YAML-first
  * MIT License
  */
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "1.0.5";
+  const VERSION = "1.0.6";
 
   class BatteryDonutCard extends HTMLElement {
     constructor() {
