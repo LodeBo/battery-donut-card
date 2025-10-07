@@ -14,7 +14,7 @@ with type **JavaScript Module**.
 ### HACS (Custom Repository)
 
 1. In **HACS → Integrations → Custom Repositories**, add:  https://github.com/lodebo/battery-donut-card
-Type: **Lovelace**
+Type: **Dashboard**
 2. Search for **“Battery Donut Card”** in HACS and install.  
 3. Restart Home Assistant and refresh your browser.
 
@@ -97,5 +97,6 @@ layout_options:
 | `box_shadow` | string | `'none'` | Box-shadow styling |
 | `border` | string | `'none'` | Border styling |
 | `padding` | string | `'0px'` | Inner padding of the card |
+
 
 
