@@ -62,7 +62,7 @@ layout_options:
 ### 🌈 Gradient Stops
 | Option | Type | Default | Description |
 |--------|------|----------|-------------|
-| `stop_red_hold` | number | 0.11 | Portion (0–1) to keep pure red before orange starts |
+| `stop_red_hold` | number | 0.11 | Position (0–1) to keep pure red before orange starts |
 | `stop_orange` | number | 0.25 | Position where orange segment ends |
 | `stop_yellow` | number | 0.45 | Position where yellow segment ends |
 | `stop_green` | number | 0.70 | Position where green segment ends and cyan begins |
@@ -98,10 +98,4 @@ layout_options:
 | `border` | string | `'none'` | Border styling |
 | `padding` | string | `'0px'` | Inner padding of the card |
 
-💡 Tip
-
-If you’re using the new Sections Dashboard layout in Home Assistant,
-you can make the donut perfectly centered by tweaking the layout_options
-and ring_radius values to fit your section size.
-This gives a clean, balanced look in both desktop and mobile views.
 
