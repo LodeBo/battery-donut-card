@@ -90,30 +90,6 @@
       if (!config || !config.entity) {
         throw new Error('Set an "entity" (0..100%) in the card config.');
       }
-
-      // ✅ Altijd geldende defaults (overschrijfbare basis)
-    const defaults = {
-      ring_radius: 70,
-      ring_width: 8,
-      ring_offset_y: 0,
-      label_ring_gap: 17,
-      background: "var(--card-background-color)",
-      wifi_enabled: true,
-      power_enabled: true,
-      top_label_text: Batterij,
-      wifi_enabled: true,
-      wifi_always_show: false,
-      wifi_size_pct: 10,
-      wifi_offset_x: 120,
-      wifi_offset_y: 35,
-      wifi_entity: sensor.lilygo_rs485_wifi_signal_strength,
-      power_enabled: true,
-      power_always_show: false,
-      power_entity: sensor.my_batteries_power_in_w,
-      power_size_pct: 16,
-      power_offset_x: -130,
-      power_offset_y: 30,
-    };
       
       // defaults + user
       this._config = Object.assign({}, BatteryDonutCard.getStubConfig(), config);
