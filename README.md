@@ -1,6 +1,6 @@
 ## 📸 Preview
 
-![Battery Donut Card](https://raw.githubusercontent.com/lodebo/main/marstek.png)
+![Battery Donut Card Preview](https://raw.githubusercontent.com/LodeBo/battery-donut-card/main/marstek.png)
 
 > *Example: dual-tone gradient ring from red → orange → yellow → green → cyan with auto-scaling text.*
 
@@ -134,6 +134,7 @@ grid_options:
 | `box_shadow` | string | `'none'` | Box-shadow styling |
 | `border` | string | `'none'` | Border styling |
 | `padding` | string | `'0px'` | Inner padding of the card |
+
 
 
 
