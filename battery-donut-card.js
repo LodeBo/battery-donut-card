@@ -11,7 +11,7 @@
 
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "1.0.8";
+  const VERSION = "1.0.2";
 
   class BatteryDonutCard extends HTMLElement {
     constructor() {
@@ -267,8 +267,8 @@
 
           // positie: offsets in % van R
           const size = (Number(c.wifi_size_pct)||9) * (2*R) / 100;
-          const px = cx + (Number(c.wifi_offset_x) || 0) * (R / 100);
-          const py = cy + (Number(c.wifi_offset_y) || 0) * (R / 100);
+          const px = (cx - R) + (Number(c.wifi_offset_x)||0) * (R/100) + R; // basis op ringcentrum
+          const py = (cy + R) + (Number(c.wifi_offset_y)||0) * (R/100);
 
           const okCol   = "#22c55e";
           const downCol = "#ef4444";
@@ -328,9 +328,8 @@
 
           // positie (offsets in % van R)
           const pSize = (Number(c.power_size_pct)||16) * (2*R) / 100;
-          const px = cx + (Number(c.power_offset_x) || 0) * (R / 100);
-          const py = cy + (Number(c.power_offset_y) || 0) * (R / 100);
-
+          const px = (cx - R) + (Number(c.power_offset_x)||0) * (R/100) + R;
+          const py = (cy + R) + (Number(c.power_offset_y)||0) * (R/100);
 
           // DUNNER: stroke 15% lichter + absolute minimum 1.4
           const stroke = Math.max(1.4, pSize * 0.18);
@@ -433,4 +432,3 @@
     // stil falen
   }
 })();
-
