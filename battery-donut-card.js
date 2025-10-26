@@ -1,12 +1,5 @@
 /*!
  * Battery Donut Card — Final5
- * Smooth multi-stop battery donut (SoC + kWh) + Wi-Fi bars + Power arrow
- * - Offsets (wifi/power) in % van ringradius (schalen mee op elk scherm)
- * - Pijl omhoog (groen) bij laden (negatief), omlaag (oranje) bij ontladen (positief)
- * - Tekst en pijl delen baseline
- * - Achtergrond volgt theme (var(--card-background-color))
- * - Pijl dunner (stroke 1.4 / 0.18), tekst naast pijl dunner (font-weight 300)
- * MIT License
  */
 
 (() => {
@@ -20,7 +13,6 @@
       this._hass = null;
       this._config = null;
       this._renderQueued = false;
-      this._logged = false;
     }
 
     static getStubConfig() {
@@ -266,9 +258,9 @@
             else bars = 0;
           }
 
-          // positie: offsets in % van R — (oude basispunt = onderrand)
+          // positie: offsets in % van R
           const size = (Number(c.wifi_size_pct)||9) * (2*R) / 100;
-          const px = (cx - R) + (Number(c.wifi_offset_x)||0) * (R/100) + R; // basis op ringcentrum X, onderrand Y
+          const px = (cx - R) + (Number(c.wifi_offset_x)||0) * (R/100) + R; // basis op ringcentrum
           const py = (cy + R) + (Number(c.wifi_offset_y)||0) * (R/100);
 
           const okCol   = "#22c55e";
@@ -327,7 +319,7 @@
 
           const absW = hasValue ? Math.abs(val) : 0;
 
-          // positie (oude basispunt = onderrand)
+          // positie (offsets in % van R)
           const pSize = (Number(c.power_size_pct)||16) * (2*R) / 100;
           const px = (cx - R) + (Number(c.power_offset_x)||0) * (R/100) + R;
           const py = (cy + R) + (Number(c.power_offset_y)||0) * (R/100);
@@ -355,7 +347,7 @@
           const yHeadHalf = yTop + head*0.55;
           const yHeadTop  = yTop + head;
 
-          // Tekst naast pijl — DUNNER: font-weight 300
+          // Tekst naast pijl — DUNNER: font-weight 300 (voorzichtige finesse)
           const tSize = Math.max(10, pSize * 0.90);
           const textDX = pSize * 0.45;
 
