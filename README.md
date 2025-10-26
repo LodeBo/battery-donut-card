@@ -33,19 +33,49 @@ Type: **Dashboard**
 
 ```yaml
 type: custom:battery-donut-card
-entity: sensor.battery_soc
-name: Battery 1
+entity: sensor.my_batteries_total_soc
 cap_kwh: 10.24
-ring_radius: 80
+segments: 140
+background: var(-card-background-color)
+border_radius: 12px
+border: 1px solid rgba(255,255,255,0.2)
+track_color: "#000000"
+color_red: "#ff0000"
+color_orange: "#fb923c"
+color_yellow: "#facc15"
+color_green: "#34d399"
+color_cyan: "#00bcd4"
+stop_red_hold: 0.11
+stop_orange: 0.25
+stop_yellow: 0.45
+stop_green: 0.7
+top_label_text: Batterijen
+top_label_weight: 400
+top_label_color: "#ffffff"
+text_color_inside: "#ffffff"
+font_scale_kwh: 0.3
+font_scale_soc: 0.3
+ring_radius: 65
 ring_width: 8
-track_color: '#000000'
-segments: 120
-label_gap: 16
-text_color: '#ffffff'
-glow_enabled: true
-layout_options:
-  grid_columns: 1
-  grid_rows: 2
+ring_offset_y: 0
+label_ring_gap: 17
+box_shadow: none
+padding: 0px
+wifi_enabled: true
+wifi_always_show: true
+wifi_entity: sensor.lilygo_rs485_wifi_signal_strength
+wifi_size_pct: 10
+wifi_offset_x: 150
+wifi_offset_y: 120
+power_enabled: true
+power_always_show: false
+power_entity: sensor.my_batteries_power_in_w
+power_size_pct: 14
+power_offset_x: -150
+power_offset_y: 120
+grid_options:
+  columns: 6
+  rows: 3
 ```
 ## ⚙️ Options
 
@@ -104,6 +134,7 @@ layout_options:
 | `box_shadow` | string | `'none'` | Box-shadow styling |
 | `border` | string | `'none'` | Border styling |
 | `padding` | string | `'0px'` | Inner padding of the card |
+
 
 
 
