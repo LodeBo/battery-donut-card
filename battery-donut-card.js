@@ -11,7 +11,7 @@
 
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "1.0.3";
+  const VERSION = "1.0.60";
 
   class BatteryDonutCard extends HTMLElement {
     constructor() {
@@ -90,7 +90,6 @@
       if (!config || !config.entity) {
         throw new Error('Set an "entity" (0..100%) in the card config.');
       }
-      
       // defaults + user
       this._config = Object.assign({}, BatteryDonutCard.getStubConfig(), config);
 
@@ -433,4 +432,3 @@
     // stil falen
   }
 })();
-       
