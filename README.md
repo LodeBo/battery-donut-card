@@ -91,15 +91,18 @@ grid_options:
 ## ⚙️ Options
 
 | Option | Type | Default | Description |
-|--------|------|----------|-------------|
+|:--|:--|:--|:--|
 | `entity` | string | **required** | Battery SoC sensor (0–100 %) |
-| `cap_kwh` | number | 5.12 | Total battery capacity (kWh) — used to calculate displayed kWh |
-| `segments` | number | 140 | Number of small arcs; higher = smoother gradient |
-| `track_color` | string | `#000000` | Color of the inactive track (background ring) |
+| `cap_kwh` | number | 5.12 | Total battery capacity (kWh) — used to calculate stored energy |
+| `segments` | number | 140 | Number of small arcs; higher = smoother ring |
+| `track_color` | string | `#000000` | Color of the inactive track (background) |
 
-### 🎨 Colors
+---
+
+## 🎨 Colors
+
 | Option | Type | Default | Description |
-|--------|------|----------|-------------|
+|:--|:--|:--|:--|
 | `color_red` | string | `#ff0000` | Gradient start color (0 %) |
 | `color_orange` | string | `#fb923c` | Red → yellow transition |
 | `color_yellow` | string | `#facc15` | Midpoint color |
@@ -107,45 +110,79 @@ grid_options:
 | `color_cyan` | string | `#00bcd4` | Gradient end color (100 %) |
 | `text_color_inside` | string | `#ffffff` | Text color inside the donut |
 
-### 🌈 Gradient Stops
-| Option | Type | Default | Description |
-|--------|------|----------|-------------|
-| `stop_red_hold` | number | 0.11 | Position (0–1) to keep pure red before orange starts |
-| `stop_orange` | number | 0.25 | Position where orange segment ends |
-| `stop_yellow` | number | 0.45 | Position where yellow segment ends |
-| `stop_green` | number | 0.70 | Position where green segment ends and cyan begins |
+---
 
-### 🧭 Layout & Position
-| Option | Type | Default | Description |
-|--------|------|----------|-------------|
-| `ring_radius` | number | 80 | Radius (size) of the donut |
-| `ring_width` | number | 8 | Thickness of the donut ring |
-| `ring_offset_y` | number | 10 | Moves the whole ring up/down |
-| `label_ring_gap` | number | 20 | Vertical distance between label and ring (only used when label is visible) |
+## 🌈 Gradient Stops
 
-### 🏷️ Top Label
 | Option | Type | Default | Description |
-|--------|------|----------|-------------|
-| `top_label_text` | string | `"Battery"` | Text above the ring — leave empty (`''`) to hide it and auto-center the ring |
-| `top_label_weight` | number | 300 | Font weight of the label |
+|:--|:--|:--|:--|
+| `stop_red_hold` | number | 0.11 | % where red stays solid before transition |
+| `stop_orange` | number | 0.25 | Transition point orange |
+| `stop_yellow` | number | 0.45 | Transition point yellow |
+| `stop_green` | number | 0.70 | Transition point green |
+
+---
+
+## 🏷️ Top Label
+
+| Option | Type | Default | Description |
+|:--|:--|:--|:--|
+| `top_label_text` | string | `"Battery"` | Text above the ring (leave empty to hide) |
+| `top_label_weight` | number | 300 | Font weight for top label |
 | `top_label_color` | string | `#ffffff` | Label text color |
+| `label_ring_gap` | number | 20 | Gap between label and ring (px) |
 
-### 🔢 Inner Text
+---
+
+## 🔢 Inner Text
+
 | Option | Type | Default | Description |
-|--------|------|----------|-------------|
-| `soc_decimals` | number | 0 | Number of decimals for % display |
-| `font_scale_kwh` | number | 0.30 | Font size of kWh text (relative to ring radius) |
-| `font_scale_soc` | number | 0.38 | Font size of % text (relative to ring radius) |
+|:--|:--|:--|:--|
+| `font_scale_kwh` | number | 0.30 | Font scale for energy (kWh) text |
+| `font_scale_soc` | number | 0.30 | Font scale for % SoC text |
+| `ring_radius` | number | 80 | Radius of the donut ring |
+| `ring_width` | number | 8 | Width of the donut ring |
+| `ring_offset_y` | number | 0 | Vertical offset of the ring center |
 
-### 🧱 Card Style
+---
+
+## 📶 Wi-Fi Indicator
+
 | Option | Type | Default | Description |
-|--------|------|----------|-------------|
-| `background` | string | `'transparent'` | Card background color |
-| `border_radius` | string | `'0px'` | Corner radius of the card |
-| `box_shadow` | string | `'none'` | Box-shadow styling |
-| `border` | string | `'none'` | Border styling |
-| `padding` | string | `'0px'` | Inner padding of the card |
+|:--|:--|:--|:--|
+| `wifi_enabled` | bool | true | Enable Wi-Fi indicator |
+| `wifi_always_show` | bool | false | Always display, even if unavailable |
+| `wifi_entity` | string | `"sensor.lilygo_rs485_wifi_signal_strength"` | Wi-Fi dBm sensor |
+| `wifi_size_pct` | number | 9 | Size relative to donut diameter (%) |
+| `wifi_offset_x` | number | 0 | Horizontal offset (% of radius) |
+| `wifi_offset_y` | number | 0 | Vertical offset (% of radius) |
 
+---
+
+## ⚡ Power Arrow
+
+| Option | Type | Default | Description |
+|:--|:--|:--|:--|
+| `power_enabled` | bool | true | Show power direction indicator |
+| `power_always_show` | bool | false | Always display, even if sensor unknown |
+| `power_entity` | string | `"sensor.inverter_active_power"` | Power sensor (W) |
+| `power_size_pct` | number | 16 | Size relative to donut diameter (%) |
+| `power_offset_x` | number | 0 | Horizontal offset (% of radius) |
+| `power_offset_y` | number | 0 | Vertical offset (% of radius) |
+
+---
+
+## 🧱 Card Style
+
+| Option | Type | Default | Description |
+|:--|:--|:--|:--|
+| `background` | string | `var(--card-background-color)` | Background color (theme-based) |
+| `border_radius` | string | `"12px"` | Card corner radius |
+| `border` | string | `"1px solid rgba(255,255,255,0.2)"` | Border styling |
+| `box_shadow` | string | `"none"` | Drop shadow styling |
+| `padding` | string | `"0px"` | Inner padding |
+
+---
 
 
 
