@@ -11,7 +11,7 @@
 
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "1.0.2";
+  const VERSION = "1.0.60";
 
   class BatteryDonutCard extends HTMLElement {
     constructor() {
@@ -20,6 +20,7 @@
       this._hass = null;
       this._config = null;
       this._renderQueued = false;
+      this._logged = false;
     }
 
     static getStubConfig() {
@@ -265,9 +266,9 @@
             else bars = 0;
           }
 
-          // positie: offsets in % van R
+          // positie: offsets in % van R — (oude basispunt = onderrand)
           const size = (Number(c.wifi_size_pct)||9) * (2*R) / 100;
-          const px = (cx - R) + (Number(c.wifi_offset_x)||0) * (R/100) + R; // basis op ringcentrum
+          const px = (cx - R) + (Number(c.wifi_offset_x)||0) * (R/100) + R; // basis op ringcentrum X, onderrand Y
           const py = (cy + R) + (Number(c.wifi_offset_y)||0) * (R/100);
 
           const okCol   = "#22c55e";
@@ -326,7 +327,7 @@
 
           const absW = hasValue ? Math.abs(val) : 0;
 
-          // positie (offsets in % van R)
+          // positie (oude basispunt = onderrand)
           const pSize = (Number(c.power_size_pct)||16) * (2*R) / 100;
           const px = (cx - R) + (Number(c.power_offset_x)||0) * (R/100) + R;
           const py = (cy + R) + (Number(c.power_offset_y)||0) * (R/100);
@@ -354,7 +355,7 @@
           const yHeadHalf = yTop + head*0.55;
           const yHeadTop  = yTop + head;
 
-          // Tekst naast pijl — DUNNER: font-weight 300 (voorzichtige finesse)
+          // Tekst naast pijl — DUNNER: font-weight 300
           const tSize = Math.max(10, pSize * 0.90);
           const textDX = pSize * 0.45;
 
