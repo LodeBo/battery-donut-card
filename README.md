@@ -69,7 +69,7 @@ label_ring_gap: 17
 # 📶 Wi-Fi Indicator
 wifi_enabled: true
 wifi_always_show: true
-wifi_entity: sensor.lilygo_rs485_wifi_signal_strength
+wifi_entity: 
 wifi_size_pct: 10
 wifi_offset_x: 150
 wifi_offset_y: 120
@@ -77,7 +77,7 @@ wifi_offset_y: 120
 # ⚡ Power Arrow
 power_enabled: true
 power_always_show: false
-power_entity: sensor.my_batteries_power_in_w
+power_entity: 
 power_size_pct: 14
 power_offset_x: -150
 power_offset_y: 120
@@ -183,6 +183,7 @@ grid_options:
 | `padding` | string | `"0px"` | Inner padding |
 
 ---
+
 
 
 
