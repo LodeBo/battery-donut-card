@@ -1,8 +1,12 @@
 {
-  "name": "Donut Card",
-  "description": "Themed Donut Card with 2 entities and smooth gradient color stops.",
-  "version": "1.8.5",
-  "frontend": true,
-  "authors": ["LodeBo"],
-  "keywords": ["card", "lovelace", "custom", "gradient", "donut"]
+  "domain": "battery-donut-card",
+  "name": "Battery Donut Card Optimized",
+  "author": "User & Gemini",
+  "version": "1.1.0",
+  "documentation": "https://github.com/home-assistant/frontend",
+  "is_helper": false,
+  "render_native": true,
+  "requirements": [],
+  "codeowners": [],
+  "iot_class": "local_polling"
 }
