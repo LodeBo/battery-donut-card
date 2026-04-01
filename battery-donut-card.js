@@ -1,10 +1,10 @@
 /*!
- * Battery Donut Card — Version 2.4.0 (The Ultimate UI Edition)
+ * Battery Donut Card — Version 2.5.0 (Visual Tweaks & Icon Scaling)
  */
 
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "2.4.0";
+  const VERSION = "2.5.0";
 
   class BatteryDonutCard extends HTMLElement {
     constructor() {
@@ -15,7 +15,6 @@
       this._elements = {}; 
     }
 
-    // Dit vertelt Home Assistant dat we een visuele editor hebben
     static getConfigElement() {
       return document.createElement("battery-donut-card-editor");
     }
@@ -55,7 +54,6 @@
 
     setConfig(config) {
       if (!config || !config.entity) {
-        // Geen harde error meer, anders breekt de visuele editor bij een nieuwe kaart
         this._config = { ...BatteryDonutCard.getStubConfig(), ...config };
       } else {
         this._config = { ...BatteryDonutCard.getStubConfig(), ...config };
@@ -143,6 +141,9 @@
         gradientPaths += arcSeg(a0, a1, W, this._colorAtStops(stops, i/segs));
       }
 
+      // De fix voor de cyan bloeding op 12-uur: We forceren een ronde rode dop precies bovenop het startpunt!
+      gradientPaths += `<circle cx="${cx}" cy="${cy - R}" r="${W / 2}" fill="${stops[0].col}" stroke="none" />`;
+
       this.shadowRoot.innerHTML = `
         <style>
           :host { display: block; width: 100%; height: 100%; }
@@ -207,10 +208,19 @@
       const bars = val >= -50 ? 4 : val >= -60 ? 3 : val >= -70 ? 2 : val >= -85 ? 1 : 0;
       const R = Number(c.ring_radius || 80);
       const cx = 130, cy = 130 + Number(c.ring_offset_y || 0);
-      const px = cx + R + (Number(c.wifi_offset_x) || 0); 
-      const py = cy + R + (Number(c.wifi_offset_y) || 0);
+      
+      // Basis x/y vergroot + grotere afstanden tussen boogjes
+      const px = cx + R + 10 + (Number(c.wifi_offset_x) || 0); 
+      const py = cy + R + 15 + (Number(c.wifi_offset_y) || 0);
       const color = "#22c55e"; 
-      this._elements.wifiContainer.innerHTML = `<g stroke="${color}" fill="none" stroke-width="2" stroke-linecap="round"><path d="M ${px-2} ${py} Q ${px} ${py-3} ${px+2} ${py}"/>${bars>=2?`<path d="M ${px-4} ${py-2} Q ${px} ${py-7} ${px+4} ${py-2}"/>`:''}${bars>=3?`<path d="M ${px-7} ${py-4} Q ${px} ${py-11} ${px+7} ${py-4}"/>`:''}${bars>=4?`<path d="M ${px-10} ${py-6} Q ${px} ${py-15} ${px+10} ${py-6}"/>`:''}<circle cx="${px}" cy="${py}" r="1" fill="${color}" stroke="none"/></g>`;
+      
+      this._elements.wifiContainer.innerHTML = `<g stroke="${color}" fill="none" stroke-width="3" stroke-linecap="round">
+        <circle cx="${px}" cy="${py}" r="2.5" fill="${color}" stroke="none"/>
+        ${bars>=1 ? `<path d="M ${px-6} ${py-5} Q ${px} ${py-9} ${px+6} ${py-5}"/>` : ''}
+        ${bars>=2 ? `<path d="M ${px-12} ${py-10} Q ${px} ${py-16} ${px+12} ${py-10}"/>` : ''}
+        ${bars>=3 ? `<path d="M ${px-18} ${py-15} Q ${px} ${py-23} ${px+18} ${py-15}"/>` : ''}
+        ${bars>=4 ? `<path d="M ${px-24} ${py-20} Q ${px} ${py-29} ${px+24} ${py-20}"/>` : ''}
+      </g>`;
     }
 
     _renderPower() {
@@ -219,16 +229,27 @@
       if (isNaN(val)) { this._elements.powerContainer.innerHTML = ''; return; }
       const R = Number(c.ring_radius || 80);
       const cx = 130, cy = 130 + Number(c.ring_offset_y || 0);
-      const px = cx - R + (Number(c.power_offset_x) || 0); 
-      const py = cy + R + (Number(c.power_offset_y) || 0);
+      
+      // Icoon en tekst verdubbeld qua grootte
+      const px = cx - R - 20 + (Number(c.power_offset_x) || 0); 
+      const py = cy + R + 10 + (Number(c.power_offset_y) || 0);
       const isCharging = val < 0;
       const color = isCharging ? "#22c55e" : "#f59e0b";
-      const arrow = isCharging ? `M ${px} ${py+6} L ${px} ${py-6} M ${px-3} ${py-3} L ${px} ${py-6} L ${px+3} ${py-3}` : `M ${px} ${py-6} L ${px} ${py+6} M ${px-3} ${py+3} L ${px} ${py+6} L ${px+3} ${py+3}`;
-      this._elements.powerContainer.innerHTML = `<g stroke="${color}" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="${arrow}"/></g><text x="${px+10}" y="${py}" font-size="12" fill="#fff" dominant-baseline="middle">${Math.abs(val).toFixed(0)} W</text>`;
+      
+      const arrow = isCharging 
+        ? `M ${px} ${py+12} L ${px} ${py-12} M ${px-6} ${py-6} L ${px} ${py-12} L ${px+6} ${py-6}` 
+        : `M ${px} ${py-12} L ${px} ${py+12} M ${px-6} ${py+6} L ${px} ${py+12} L ${px+6} ${py+6}`;
+        
+      this._elements.powerContainer.innerHTML = `
+        <g stroke="${color}" fill="none" stroke-width="3.5" stroke-linecap="round">
+          <path d="${arrow}"/>
+        </g>
+        <text x="${px+15}" y="${py}" font-size="16" fill="#fff" dominant-baseline="middle" font-weight="400">${Math.abs(val).toFixed(0)} W</text>
+      `;
     }
   }
 
-  // --- HIER ZIT DE MAGIE: DE ECHTE VISUELE EDITOR ---
+  // --- UI Editor ---
   class BatteryDonutCardEditor extends HTMLElement {
     setConfig(config) {
       this._config = config;
@@ -245,7 +266,6 @@
       this.attachShadow({ mode: "open" });
       this._form = document.createElement("ha-form");
       
-      // Dit definieert de grafische interface in HA
       this._form.schema = [
         { name: "top_label_text", label: "Kaart Titel (bijv. Batterij 1)", selector: { text: {} } },
         { name: "entity", label: "Batterij SoC Sensor (%)", selector: { entity: { domain: "sensor" } } },
@@ -261,7 +281,6 @@
       this._form.computeLabel = s => s.label || s.name;
       this._form.data = this._config;
       
-      // Sla de instellingen direct op als je iets aanklikt
       this._form.addEventListener("value-changed", ev => {
         this.dispatchEvent(new CustomEvent("config-changed", {
           detail: { config: ev.detail.value },
