@@ -1,10 +1,10 @@
 /*!
- * Battery Donut Card — Version 2.6.0 (Perfected Visuals)
+ * Battery Donut Card — Version 2.8.0 (Shorter Arrow, Bigger Text)
  */
 
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "2.7.0";
+  const VERSION = "2.8.0";
 
   class BatteryDonutCard extends HTMLElement {
     constructor() {
@@ -135,13 +135,15 @@
         return `<path d="M ${x0} ${y0} A ${R} ${R} 0 0 1 ${x1} ${y1}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round"/>`;
       };
 
-      // FIX: Loop achterstevoren! Hierdoor wordt het rode stuk als laatste getekend en ligt het mooi 
-      // over de blauwe staart heen op 12 uur. Geen losse rode stip meer nodig.
       for(let i = segs - 1; i >= 0; i--){
         const a0 = rot + (i/segs)*360;
         const a1 = rot + ((i+1.2)/segs)*360; 
         gradientPaths += arcSeg(a0, a1, W, this._colorAtStops(stops, i/segs));
       }
+
+      // Tekst is subtiel groter gemaakt (0.32 in plaats van 0.30)
+      const fs_kwh = R * 0.32;
+      const fs_soc = R * 0.35;
 
       this.shadowRoot.innerHTML = `
         <style>
@@ -168,8 +170,8 @@
               <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${c.track_color}" stroke-width="${W}" />
               <g mask="url(#donut-mask)">${gradientPaths}</g>
               <text x="${cx}" y="${cy - R - 20}" font-size="${R * 0.35}" fill="#ffffff" text-anchor="middle">${c.top_label_text}</text>
-              <text id="kwh-text" class="value-text" x="${cx}" y="${cy - R * 0.08}" font-size="${R * 0.30}" text-anchor="middle">0.00 kWh</text>
-              <text id="soc-text" class="value-text" x="${cx}" y="${cy + R * 0.40}" font-size="${R * 0.30}" text-anchor="middle">0 %</text>
+              <text id="kwh-text" class="value-text" x="${cx}" y="${cy - R * 0.08}" font-size="${fs_kwh}" text-anchor="middle">0.00 kWh</text>
+              <text id="soc-text" class="value-text" x="${cx}" y="${cy + R * 0.40}" font-size="${fs_soc}" text-anchor="middle">0 %</text>
               <g id="wifi-container"></g>
               <g id="power-container"></g>
             </svg>
@@ -208,7 +210,6 @@
       const R = Number(c.ring_radius || 80);
       const cx = 130, cy = 130 + Number(c.ring_offset_y || 0);
       
-      // FIX: Positie verlaagd, icoon smaller (minder spreiding in X-as)
       const px = cx + R + 15 + (Number(c.wifi_offset_x) || 0); 
       const py = cy + R + 20 + (Number(c.wifi_offset_y) || 0);
       const color = "#22c55e"; 
@@ -229,21 +230,22 @@
       const R = Number(c.ring_radius || 80);
       const cx = 130, cy = 130 + Number(c.ring_offset_y || 0);
       
-      // FIX: Verder naar links (-25) en iets lager gezet, zodat waarden als 2000W ver onder de ring blijven.
       const px = cx - R - 25 + (Number(c.power_offset_x) || 0); 
       const py = cy + R + 20 + (Number(c.power_offset_y) || 0);
       const isCharging = val < 0;
       const color = isCharging ? "#22c55e" : "#f59e0b";
       
+      // FIX: Pijltje een stuk korter gemaakt (van -9/+9 naar -6/+6) en smallere pijlpunt (-4 i.p.v -6)
       const arrow = isCharging 
-        ? `M ${px} ${py+9} L ${px} ${py-9} M ${px-4} ${py-4} L ${px} ${py-9} L ${px+4} ${py-4}` 
-        : `M ${px} ${py-9} L ${px} ${py+9} M ${px-4} ${py+4} L ${px} ${py+9} L ${px+4} ${py+4}`;
+        ? `M ${px} ${py+6} L ${px} ${py-6} M ${px-4} ${py-2} L ${px} ${py-6} L ${px+4} ${py-2}` 
+        : `M ${px} ${py-6} L ${px} ${py+6} M ${px-4} ${py+2} L ${px} ${py+6} L ${px+4} ${py+2}`;
         
+      // FIX: Font-size verhoogd van 14 naar 16
       this._elements.powerContainer.innerHTML = `
         <g stroke="${color}" fill="none" stroke-width="2.5" stroke-linecap="round">
           <path d="${arrow}"/>
         </g>
-        <text x="${px+12}" y="${py}" font-size="14" fill="#fff" dominant-baseline="middle" font-weight="400">${Math.abs(val).toFixed(0)} W</text>
+        <text x="${px+12}" y="${py}" font-size="16" fill="#fff" dominant-baseline="middle" font-weight="400">${Math.abs(val).toFixed(0)} W</text>
       `;
     }
   }
