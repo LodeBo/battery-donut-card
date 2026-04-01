@@ -1,5 +1,5 @@
 /*!
- * Battery Donut Card — Version 2.6.0 (Icon Proportions Fixed)
+ * Battery Donut Card — Version 2.6.0 (Perfected Visuals)
  */
 
 (() => {
@@ -77,7 +77,10 @@
     }
 
     getCardSize() { return 3; }
-    getGridOptions() { return { columns: 4, rows: 4, min_columns: 2, min_rows: 2 }; }
+    
+    getGridOptions() {
+      return { columns: 4, rows: 4, min_columns: 2, min_rows: 2 };
+    }
 
     _clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
     _toRad(d) { return (d * Math.PI) / 180; }
@@ -132,14 +135,13 @@
         return `<path d="M ${x0} ${y0} A ${R} ${R} 0 0 1 ${x1} ${y1}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round"/>`;
       };
 
-      for(let i=0; i<segs; i++){
+      // FIX: Loop achterstevoren! Hierdoor wordt het rode stuk als laatste getekend en ligt het mooi 
+      // over de blauwe staart heen op 12 uur. Geen losse rode stip meer nodig.
+      for(let i = segs - 1; i >= 0; i--){
         const a0 = rot + (i/segs)*360;
         const a1 = rot + ((i+1.2)/segs)*360; 
         gradientPaths += arcSeg(a0, a1, W, this._colorAtStops(stops, i/segs));
       }
-
-      // Subtielere fix voor de 12-uur kleurbloeding
-      gradientPaths += `<circle cx="${cx}" cy="${cy - R}" r="${(W / 2) * 0.95}" fill="${stops[0].col}" stroke="none" />`;
 
       this.shadowRoot.innerHTML = `
         <style>
@@ -206,17 +208,17 @@
       const R = Number(c.ring_radius || 80);
       const cx = 130, cy = 130 + Number(c.ring_offset_y || 0);
       
-      const px = cx + R + 10 + (Number(c.wifi_offset_x) || 0); 
-      const py = cy + R + 15 + (Number(c.wifi_offset_y) || 0);
+      // FIX: Positie verlaagd, icoon smaller (minder spreiding in X-as)
+      const px = cx + R + 15 + (Number(c.wifi_offset_x) || 0); 
+      const py = cy + R + 20 + (Number(c.wifi_offset_y) || 0);
       const color = "#22c55e"; 
       
-      // Proporties aangepast: smaller en meer gebogen (echt wifi-icoon stijl)
       this._elements.wifiContainer.innerHTML = `<g stroke="${color}" fill="none" stroke-width="2.5" stroke-linecap="round">
-        <circle cx="${px}" cy="${py}" r="2.5" fill="${color}" stroke="none"/>
-        ${bars>=1 ? `<path d="M ${px-5} ${py-4} Q ${px} ${py-10} ${px+5} ${py-4}"/>` : ''}
-        ${bars>=2 ? `<path d="M ${px-10} ${py-8} Q ${px} ${py-18} ${px+10} ${py-8}"/>` : ''}
-        ${bars>=3 ? `<path d="M ${px-15} ${py-12} Q ${px} ${py-26} ${px+15} ${py-12}"/>` : ''}
-        ${bars>=4 ? `<path d="M ${px-20} ${py-16} Q ${px} ${py-34} ${px+20} ${py-16}"/>` : ''}
+        <circle cx="${px}" cy="${py}" r="2" fill="${color}" stroke="none"/>
+        ${bars>=1 ? `<path d="M ${px-5} ${py-4} Q ${px} ${py-7} ${px+5} ${py-4}"/>` : ''}
+        ${bars>=2 ? `<path d="M ${px-9} ${py-8} Q ${px} ${py-12} ${px+9} ${py-8}"/>` : ''}
+        ${bars>=3 ? `<path d="M ${px-13} ${py-12} Q ${px} ${py-17} ${px+13} ${py-12}"/>` : ''}
+        ${bars>=4 ? `<path d="M ${px-17} ${py-16} Q ${px} ${py-22} ${px+17} ${py-16}"/>` : ''}
       </g>`;
     }
 
@@ -227,21 +229,21 @@
       const R = Number(c.ring_radius || 80);
       const cx = 130, cy = 130 + Number(c.ring_offset_y || 0);
       
-      const px = cx - R - 20 + (Number(c.power_offset_x) || 0); 
-      const py = cy + R + 10 + (Number(c.power_offset_y) || 0);
+      // FIX: Verder naar links (-25) en iets lager gezet, zodat waarden als 2000W ver onder de ring blijven.
+      const px = cx - R - 25 + (Number(c.power_offset_x) || 0); 
+      const py = cy + R + 20 + (Number(c.power_offset_y) || 0);
       const isCharging = val < 0;
       const color = isCharging ? "#22c55e" : "#f59e0b";
       
-      // Korter pijltje (py+8 i.p.v. py+12)
       const arrow = isCharging 
-        ? `M ${px} ${py+8} L ${px} ${py-8} M ${px-5} ${py-3} L ${px} ${py-8} L ${px+5} ${py-3}` 
-        : `M ${px} ${py-8} L ${px} ${py+8} M ${px-5} ${py+3} L ${px} ${py+8} L ${px+5} ${py+3}`;
+        ? `M ${px} ${py+9} L ${px} ${py-9} M ${px-4} ${py-4} L ${px} ${py-9} L ${px+4} ${py-4}` 
+        : `M ${px} ${py-9} L ${px} ${py+9} M ${px-4} ${py+4} L ${px} ${py+9} L ${px+4} ${py+4}`;
         
       this._elements.powerContainer.innerHTML = `
-        <g stroke="${color}" fill="none" stroke-width="3" stroke-linecap="round">
+        <g stroke="${color}" fill="none" stroke-width="2.5" stroke-linecap="round">
           <path d="${arrow}"/>
         </g>
-        <text x="${px+14}" y="${py+1}" font-size="20" fill="#fff" dominant-baseline="middle" font-weight="500">${Math.abs(val).toFixed(0)} W</text>
+        <text x="${px+12}" y="${py}" font-size="14" fill="#fff" dominant-baseline="middle" font-weight="400">${Math.abs(val).toFixed(0)} W</text>
       `;
     }
   }
