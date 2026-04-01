@@ -1,10 +1,10 @@
 /*!
- * Battery Donut Card — Version 2.8.0 (Shorter Arrow, Bigger Text)
+ * Battery Donut Card — Version 2.9.0 (Massive Power Text)
  */
 
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "2.8.0";
+  const VERSION = "2.9.0";
 
   class BatteryDonutCard extends HTMLElement {
     constructor() {
@@ -141,7 +141,6 @@
         gradientPaths += arcSeg(a0, a1, W, this._colorAtStops(stops, i/segs));
       }
 
-      // Tekst is subtiel groter gemaakt (0.32 in plaats van 0.30)
       const fs_kwh = R * 0.32;
       const fs_soc = R * 0.35;
 
@@ -235,17 +234,16 @@
       const isCharging = val < 0;
       const color = isCharging ? "#22c55e" : "#f59e0b";
       
-      // FIX: Pijltje een stuk korter gemaakt (van -9/+9 naar -6/+6) en smallere pijlpunt (-4 i.p.v -6)
       const arrow = isCharging 
         ? `M ${px} ${py+6} L ${px} ${py-6} M ${px-4} ${py-2} L ${px} ${py-6} L ${px+4} ${py-2}` 
         : `M ${px} ${py-6} L ${px} ${py+6} M ${px-4} ${py+2} L ${px} ${py+6} L ${px+4} ${py+2}`;
         
-      // FIX: Font-size verhoogd van 14 naar 16
+      // FIX: Font-size verhoogd naar 22, font-weight naar 500, x-positie iets verschoven naar px+16
       this._elements.powerContainer.innerHTML = `
         <g stroke="${color}" fill="none" stroke-width="2.5" stroke-linecap="round">
           <path d="${arrow}"/>
         </g>
-        <text x="${px+12}" y="${py}" font-size="16" fill="#fff" dominant-baseline="middle" font-weight="400">${Math.abs(val).toFixed(0)} W</text>
+        <text x="${px+16}" y="${py}" font-size="22" fill="#fff" dominant-baseline="middle" font-weight="500">${Math.abs(val).toFixed(0)} W</text>
       `;
     }
   }
