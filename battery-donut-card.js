@@ -1,10 +1,10 @@
 /*!
- * Battery Donut Card — Version 2.3.0 (Sections / Grid View Ready)
+ * Battery Donut Card — Version 2.4.0 (The Ultimate UI Edition)
  */
 
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "2.3.0";
+  const VERSION = "2.4.0";
 
   class BatteryDonutCard extends HTMLElement {
     constructor() {
@@ -15,9 +15,14 @@
       this._elements = {}; 
     }
 
+    // Dit vertelt Home Assistant dat we een visuele editor hebben
+    static getConfigElement() {
+      return document.createElement("battery-donut-card-editor");
+    }
+
     static getStubConfig() {
       return {
-        entity: "sensor.battery_soc",
+        entity: "",
         cap_kwh: 5.12,
         segments: 140,
         ring_radius: 80,
@@ -33,13 +38,13 @@
         stop_orange: 0.25,
         stop_yellow: 0.45,
         stop_green: 0.70,
-        top_label_text: "Battery",
+        top_label_text: "Batterij",
         wifi_enabled: true,
-        wifi_entity: "sensor.lilygo_rs485_wifi_signal_strength",
+        wifi_entity: "",
         wifi_offset_x: 0,
         wifi_offset_y: 0,
         power_enabled: true,
-        power_entity: "sensor.inverter_active_power",
+        power_entity: "",
         power_offset_x: 0,
         power_offset_y: 0,
         background: "var(--card-background-color)",
@@ -50,9 +55,11 @@
 
     setConfig(config) {
       if (!config || !config.entity) {
-        throw new Error('Set an "entity" (0..100%) in the card config.');
+        // Geen harde error meer, anders breekt de visuele editor bij een nieuwe kaart
+        this._config = { ...BatteryDonutCard.getStubConfig(), ...config };
+      } else {
+        this._config = { ...BatteryDonutCard.getStubConfig(), ...config };
       }
-      this._config = { ...BatteryDonutCard.getStubConfig(), ...config };
       this._buildDOM();
       if (this._hass) this._updateValues();
     }
@@ -67,19 +74,14 @@
     }
 
     _hasStateChanged(oldHass, newHass, entityId) {
+      if (!entityId) return false;
       return oldHass?.states[entityId]?.state !== newHass?.states[entityId]?.state;
     }
 
-    // --- Lay-out methodes voor HA Sections/Grid ---
-    getCardSize() { return 3; } // Legacy fallback
+    getCardSize() { return 3; }
     
     getGridOptions() {
-      return {
-        columns: 4,     // Standaard breedte in de nieuwe weergave
-        rows: 4,        // Standaard hoogte
-        min_columns: 2, // Voorkom dat je de kaart zó smal maakt dat hij onleesbaar wordt
-        min_rows: 2,
-      };
+      return { columns: 4, rows: 4, min_columns: 2, min_rows: 2 };
     }
 
     _clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
@@ -108,8 +110,7 @@
       const c = this._config;
       const R = Number(c.ring_radius || 80);
       const W = Number(c.ring_width || 8);
-      const cx = 130;
-      const cy = 130 + Number(c.ring_offset_y || 0);
+      const cx = 130, cy = 130 + Number(c.ring_offset_y || 0);
       const circumference = 2 * Math.PI * R;
       this._circumference = circumference;
 
@@ -142,7 +143,6 @@
         gradientPaths += arcSeg(a0, a1, W, this._colorAtStops(stops, i/segs));
       }
 
-      // Volledig Responsive CSS: let op de SVG styling met aspect-ratio en max-height
       this.shadowRoot.innerHTML = `
         <style>
           :host { display: block; width: 100%; height: 100%; }
@@ -152,8 +152,10 @@
           text { user-select:none; font-family: Inter, system-ui, sans-serif; }
           .value-text { fill: #ffffff; font-weight: 300; }
           #mask-circle { transition: stroke-dashoffset 0.5s ease-out; }
+          .warning { color: #facc15; font-size: 14px; text-align: center; font-family: sans-serif; }
         </style>
         <ha-card>
+          ${!c.entity ? `<div class="warning">Selecteer een batterij sensor in de editor.</div>` : `
           <div class="wrap">
             <svg viewBox="0 0 260 260">
               <defs>
@@ -171,21 +173,23 @@
               <g id="wifi-container"></g>
               <g id="power-container"></g>
             </svg>
-          </div>
+          </div>`}
         </ha-card>
       `;
 
-      this._elements = {
-        maskCircle: this.shadowRoot.getElementById("mask-circle"),
-        kwhText: this.shadowRoot.getElementById("kwh-text"),
-        socText: this.shadowRoot.getElementById("soc-text"),
-        wifiContainer: this.shadowRoot.getElementById("wifi-container"),
-        powerContainer: this.shadowRoot.getElementById("power-container")
-      };
+      if (c.entity) {
+        this._elements = {
+          maskCircle: this.shadowRoot.getElementById("mask-circle"),
+          kwhText: this.shadowRoot.getElementById("kwh-text"),
+          socText: this.shadowRoot.getElementById("soc-text"),
+          wifiContainer: this.shadowRoot.getElementById("wifi-container"),
+          powerContainer: this.shadowRoot.getElementById("power-container")
+        };
+      }
     }
 
     _updateValues() {
-      const h = this._hass; const c = this._config; if (!h || !c.entity) return;
+      const h = this._hass; const c = this._config; if (!h || !c.entity || !this._elements.maskCircle) return;
       const rawSoc = h.states[c.entity]?.state ?? "0";
       const soc = this._clamp(parseFloat(rawSoc) || 0, 0, 100);
       const kwh = (soc / 100) * Number(c.cap_kwh || 5.12);
@@ -224,12 +228,56 @@
     }
   }
 
-  class BatteryDonutCardEditor extends HTMLElement { setConfig(c) { this._config = c; } }
+  // --- HIER ZIT DE MAGIE: DE ECHTE VISUELE EDITOR ---
+  class BatteryDonutCardEditor extends HTMLElement {
+    setConfig(config) {
+      this._config = config;
+      if (this._form) this._form.data = config;
+    }
+
+    set hass(hass) {
+      this._hass = hass;
+      if (!this._form) this._buildForm();
+      this._form.hass = hass;
+    }
+
+    _buildForm() {
+      this.attachShadow({ mode: "open" });
+      this._form = document.createElement("ha-form");
+      
+      // Dit definieert de grafische interface in HA
+      this._form.schema = [
+        { name: "top_label_text", label: "Kaart Titel (bijv. Batterij 1)", selector: { text: {} } },
+        { name: "entity", label: "Batterij SoC Sensor (%)", selector: { entity: { domain: "sensor" } } },
+        { name: "cap_kwh", label: "Totale Capaciteit (kWh)", selector: { number: { mode: "box", step: 0.1 } } },
+        { type: "grid", name: "", schema: [
+          { name: "wifi_enabled", label: "Toon Wi-Fi Icoon", selector: { boolean: {} } },
+          { name: "power_enabled", label: "Toon Vermogen Pijltje", selector: { boolean: {} } }
+        ]},
+        { name: "wifi_entity", label: "Wi-Fi Sterkte Sensor", selector: { entity: { domain: "sensor" } } },
+        { name: "power_entity", label: "Actief Vermogen Sensor (W)", selector: { entity: { domain: "sensor" } } }
+      ];
+      
+      this._form.computeLabel = s => s.label || s.name;
+      this._form.data = this._config;
+      
+      // Sla de instellingen direct op als je iets aanklikt
+      this._form.addEventListener("value-changed", ev => {
+        this.dispatchEvent(new CustomEvent("config-changed", {
+          detail: { config: ev.detail.value },
+          bubbles: true, composed: true
+        }));
+      });
+      
+      this.shadowRoot.appendChild(this._form);
+    }
+  }
+
   customElements.define("battery-donut-card-editor", BatteryDonutCardEditor);
   customElements.define(TAG, BatteryDonutCard);
   
   window.customCards = window.customCards || [];
   if (!window.customCards.some(c => c.type === TAG)) {
-    window.customCards.push({ type: TAG, name: "Battery Donut Card", description: "Smooth gradient donut ready for Sections View.", preview: true });
+    window.customCards.push({ type: TAG, name: "Battery Donut Card", description: "Smooth gradient donut with native visual editor.", preview: true });
   }
 })();
