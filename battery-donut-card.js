@@ -122,7 +122,7 @@
       const fs_top = R * 0.42; 
       
       // Label ring gap ingesteld op de gevraagde 15 (dus cy - R - 15)
-      const y_top = (cy - R) - 15;
+      const y_top = (cy - R) - 25;
 
       this.shadowRoot.innerHTML = `
         <style>
