@@ -1,10 +1,11 @@
 /*!
- * Battery Donut Card — Version 2.9.0 (Massive Power Text)
+ * Battery Donut Card — Version 3.0.0 (Hardcoded Edition)
+ * Zero configuration clutter. All visual specs strictly hardcoded.
  */
 
 (() => {
   const TAG = "battery-donut-card";
-  const VERSION = "2.9.0";
+  const VERSION = "3.0.0";
 
   class BatteryDonutCard extends HTMLElement {
     constructor() {
@@ -23,32 +24,11 @@
       return {
         entity: "",
         cap_kwh: 5.12,
-        segments: 140,
-        ring_radius: 80,
-        ring_width: 8,
-        ring_offset_y: 0,
-        track_color: "rgba(100, 100, 100, 0.2)",
-        color_red: "#ff0000",
-        color_orange: "#fb923c",
-        color_yellow: "#facc15",
-        color_green: "#34d399",
-        color_cyan: "#00bcd4",
-        stop_red_hold: 0.11,
-        stop_orange: 0.25,
-        stop_yellow: 0.45,
-        stop_green: 0.70,
-        top_label_text: "Batterij",
+        top_label_text: "Batterij 1",
         wifi_enabled: true,
         wifi_entity: "",
-        wifi_offset_x: 0,
-        wifi_offset_y: 0,
         power_enabled: true,
-        power_entity: "",
-        power_offset_x: 0,
-        power_offset_y: 0,
-        background: "var(--card-background-color)",
-        border_radius: "12px",
-        border: "1px solid rgba(255,255,255,0.2)",
+        power_entity: ""
       };
     }
 
@@ -77,10 +57,7 @@
     }
 
     getCardSize() { return 3; }
-    
-    getGridOptions() {
-      return { columns: 4, rows: 4, min_columns: 2, min_rows: 2 };
-    }
+    getGridOptions() { return { columns: 4, rows: 4, min_columns: 2, min_rows: 2 }; }
 
     _clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
     _toRad(d) { return (d * Math.PI) / 180; }
@@ -96,36 +73,34 @@
       t=this._clamp(t,0,1);
       for(let i=0;i<stops.length-1;i++){
         const A=stops[i],B=stops[i+1];
-        if(t>=A.pos && t<=B.pos){
-          const f=(t-A.pos)/Math.max(B.pos-A.pos,1e-6);
-          return this._lerpColor(A.col,B.col,f);
+        if(t>=A[0] && t<=B[0]){
+          const f=(t-A[0])/Math.max(B[0]-A[0],1e-6);
+          return this._lerpColor(A[1],B[1],f);
         }
       }
-      return stops[stops.length-1].col;
+      return stops[stops.length-1][1];
     }
 
     _buildDOM() {
       const c = this._config;
-      const R = Number(c.ring_radius || 80);
-      const W = Number(c.ring_width || 8);
-      const cx = 130, cy = 130 + Number(c.ring_offset_y || 0);
+      
+      // --- HARDCODED SPECS ---
+      const R = 80;
+      const W = 7;
+      const cx = 130, cy = 130;
       const circumference = 2 * Math.PI * R;
       this._circumference = circumference;
 
-      const sRH=this._clamp(Number(c.stop_red_hold),0,1);
-      const sO =this._clamp(Number(c.stop_orange ),0,1);
-      const sY =this._clamp(Number(c.stop_yellow ),0,1);
-      const sG =this._clamp(Number(c.stop_green  ),0,1);
-      const stops=[
-        {pos:0.0,col:c.color_red||"#ff0000"},
-        {pos:Math.max(0,Math.min(sRH,1)),col:c.color_red||"#ff0000"},
-        {pos:Math.max(sRH,Math.min(sO,1)),col:c.color_orange||"#fb923c"},
-        {pos:Math.max(sO,Math.min(sY,1)),col:c.color_yellow||"#facc15"},
-        {pos:Math.max(sY,Math.min(sG,1)),col:c.color_green||"#34d399"},
-        {pos:1.0,col:c.color_cyan||"#00bcd4"},
+      const stops = [
+        [0.00, "#ff0000"],
+        [0.11, "#ff0000"],
+        [0.25, "#fb923c"],
+        [0.45, "#facc15"],
+        [0.70, "#34d399"],
+        [1.00, "#00bcd4"]
       ];
 
-      const segs = Math.max(12, Number(c.segments || 140));
+      const segs = 140;
       const rot = -90;
       let gradientPaths = "";
       
@@ -141,13 +116,18 @@
         gradientPaths += arcSeg(a0, a1, W, this._colorAtStops(stops, i/segs));
       }
 
-      const fs_kwh = R * 0.32;
-      const fs_soc = R * 0.35;
+      // Vaste font-scales (0.3 zoals verzocht)
+      const fs_kwh = R * 0.3;
+      const fs_soc = R * 0.3;
+      const fs_top = R * 0.42; 
+      
+      // Label ring gap ingesteld op de gevraagde 15 (dus cy - R - 15)
+      const y_top = (cy - R) - 15;
 
       this.shadowRoot.innerHTML = `
         <style>
           :host { display: block; width: 100%; height: 100%; }
-          ha-card { background: ${c.background}; border-radius: ${c.border_radius}; border: ${c.border}; display:flex; align-items:center; justify-content:center; width:100%; height:100%; box-sizing: border-box; padding: 12px; overflow: hidden; }
+          ha-card { background: var(--card-background-color); border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; width:100%; height:100%; box-sizing: border-box; padding: 12px; overflow: hidden; }
           .wrap { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
           svg { width: 100%; height: 100%; max-height: 100%; max-width: 100%; aspect-ratio: 1 / 1; display: block; object-fit: contain; }
           text { user-select:none; font-family: Inter, system-ui, sans-serif; }
@@ -166,9 +146,9 @@
                     transform="rotate(-90 ${cx} ${cy})" />
                 </mask>
               </defs>
-              <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${c.track_color}" stroke-width="${W}" />
+              <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#000000" stroke-width="${W}" />
               <g mask="url(#donut-mask)">${gradientPaths}</g>
-              <text x="${cx}" y="${cy - R - 20}" font-size="${R * 0.35}" fill="#ffffff" text-anchor="middle">${c.top_label_text}</text>
+              <text x="${cx}" y="${y_top}" font-size="${fs_top}" fill="#ffffff" text-anchor="middle" font-weight="400">${c.top_label_text}</text>
               <text id="kwh-text" class="value-text" x="${cx}" y="${cy - R * 0.08}" font-size="${fs_kwh}" text-anchor="middle">0.00 kWh</text>
               <text id="soc-text" class="value-text" x="${cx}" y="${cy + R * 0.40}" font-size="${fs_soc}" text-anchor="middle">0 %</text>
               <g id="wifi-container"></g>
@@ -206,11 +186,11 @@
       const val = parseFloat(this._hass.states[c.wifi_entity]?.state ?? "");
       if (isNaN(val)) { this._elements.wifiContainer.innerHTML = ''; return; }
       const bars = val >= -50 ? 4 : val >= -60 ? 3 : val >= -70 ? 2 : val >= -85 ? 1 : 0;
-      const R = Number(c.ring_radius || 80);
-      const cx = 130, cy = 130 + Number(c.ring_offset_y || 0);
+      const R = 80, cx = 130, cy = 130;
       
-      const px = cx + R + 15 + (Number(c.wifi_offset_x) || 0); 
-      const py = cy + R + 20 + (Number(c.wifi_offset_y) || 0);
+      // Hardcoded X & Y posities gebaseerd op basis (20) + offset_y (20) = 40
+      const px = cx + R + 15; 
+      const py = cy + R + 40; 
       const color = "#22c55e"; 
       
       this._elements.wifiContainer.innerHTML = `<g stroke="${color}" fill="none" stroke-width="2.5" stroke-linecap="round">
@@ -226,29 +206,28 @@
       const c = this._config;
       const val = parseFloat(this._hass.states[c.power_entity]?.state ?? "");
       if (isNaN(val)) { this._elements.powerContainer.innerHTML = ''; return; }
-      const R = Number(c.ring_radius || 80);
-      const cx = 130, cy = 130 + Number(c.ring_offset_y || 0);
+      const R = 80, cx = 130, cy = 130;
       
-      const px = cx - R - 25 + (Number(c.power_offset_x) || 0); 
-      const py = cy + R + 20 + (Number(c.power_offset_y) || 0);
+      // Hardcoded X & Y posities gebaseerd op basis (20) + offset_y (15) = 35
+      const px = cx - R - 25; 
+      const py = cy + R + 35; 
       const isCharging = val < 0;
-      const color = isCharging ? "#22c55e" : "#f59e0b";
+      const color = isCharging ? "#34d399" : "#fb923c"; // Vaste groen en oranje kleuren uit jouw lijst
       
       const arrow = isCharging 
         ? `M ${px} ${py+6} L ${px} ${py-6} M ${px-4} ${py-2} L ${px} ${py-6} L ${px+4} ${py-2}` 
         : `M ${px} ${py-6} L ${px} ${py+6} M ${px-4} ${py+2} L ${px} ${py+6} L ${px+4} ${py+2}`;
         
-      // FIX: Font-size verhoogd naar 22, font-weight naar 500, x-positie iets verschoven naar px+16
       this._elements.powerContainer.innerHTML = `
         <g stroke="${color}" fill="none" stroke-width="2.5" stroke-linecap="round">
           <path d="${arrow}"/>
         </g>
-        <text x="${px+16}" y="${py}" font-size="22" fill="#fff" dominant-baseline="middle" font-weight="500">${Math.abs(val).toFixed(0)} W</text>
+        <text x="${px+16}" y="${py}" font-size="22" fill="#ffffff" dominant-baseline="middle" font-weight="500">${Math.abs(val).toFixed(0)} W</text>
       `;
     }
   }
 
-  // --- UI Editor ---
+  // --- Ultra-Schone UI Editor ---
   class BatteryDonutCardEditor extends HTMLElement {
     setConfig(config) {
       this._config = config;
@@ -265,16 +244,17 @@
       this.attachShadow({ mode: "open" });
       this._form = document.createElement("ha-form");
       
+      // Alleen de puur noodzakelijke velden blijven over
       this._form.schema = [
         { name: "top_label_text", label: "Kaart Titel (bijv. Batterij 1)", selector: { text: {} } },
         { name: "entity", label: "Batterij SoC Sensor (%)", selector: { entity: { domain: "sensor" } } },
         { name: "cap_kwh", label: "Totale Capaciteit (kWh)", selector: { number: { mode: "box", step: 0.1 } } },
         { type: "grid", name: "", schema: [
-          { name: "wifi_enabled", label: "Toon Wi-Fi Icoon", selector: { boolean: {} } },
-          { name: "power_enabled", label: "Toon Vermogen Pijltje", selector: { boolean: {} } }
+          { name: "wifi_enabled", label: "Toon Wi-Fi", selector: { boolean: {} } },
+          { name: "power_enabled", label: "Toon Vermogen", selector: { boolean: {} } }
         ]},
-        { name: "wifi_entity", label: "Wi-Fi Sterkte Sensor", selector: { entity: { domain: "sensor" } } },
-        { name: "power_entity", label: "Actief Vermogen Sensor (W)", selector: { entity: { domain: "sensor" } } }
+        { name: "wifi_entity", label: "Wi-Fi Sensor", selector: { entity: { domain: "sensor" } } },
+        { name: "power_entity", label: "Vermogen Sensor (W)", selector: { entity: { domain: "sensor" } } }
       ];
       
       this._form.computeLabel = s => s.label || s.name;
@@ -296,6 +276,6 @@
   
   window.customCards = window.customCards || [];
   if (!window.customCards.some(c => c.type === TAG)) {
-    window.customCards.push({ type: TAG, name: "Battery Donut Card", description: "Smooth gradient donut with native visual editor.", preview: true });
+    window.customCards.push({ type: TAG, name: "Battery Donut Card", description: "Hardcoded, hyper-optimized donut card.", preview: true });
   }
 })();
