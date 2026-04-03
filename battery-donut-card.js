@@ -148,7 +148,7 @@
               </defs>
               <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#000000" stroke-width="${W}" />
               <g mask="url(#donut-mask)">${gradientPaths}</g>
-              <text x="${cx}" y="${y_top}" font-size="${fs_top}" fill="#ffffff" text-anchor="middle" font-weight="400">${c.top_label_text}</text>
+              <text x="${cx}" y="${y_top}" font-size="${fs_top}" fill="#ffffff" text-anchor="middle" font-weight="300">${c.top_label_text}</text>
               <text id="kwh-text" class="value-text" x="${cx}" y="${cy - R * 0.08}" font-size="${fs_kwh}" text-anchor="middle">0.00 kWh</text>
               <text id="soc-text" class="value-text" x="${cx}" y="${cy + R * 0.40}" font-size="${fs_soc}" text-anchor="middle">0 %</text>
               <g id="wifi-container"></g>
